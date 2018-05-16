@@ -11,27 +11,60 @@ class base (object):
     
     # 返回目录中指定后缀的文件列表。
     def getFileList(self, path, type):
+        """
+        Returns a list of files with the specified suffix in the directory.
+        :param path:
+        :param type:
+        :return:
+        """
         return [os.path.join (path, f) for f in os.listdir (path) if f.endswith ('.' + type)]
     
     # 获取图像文件名字,有文件类别后缀的，无路径。
     def getImageName(self, imagefilepath):
+        """
+        Get the image file name, there is a file category suffix, no path.
+        :param imagefilepath:
+        :return:
+        """
         _temp = imagefilepath.split ("/")[-1]
         return _temp.split ("\\")[-1]
     
     # 获取图像名字,无文件类别后缀。
     def getImageName2(self, imagefile):
+        """
+        Get image name, no file category suffix.
+        :param imagefile:
+        :return:
+        """
         return imagefile.split (".")[0]
     
     # 获取图像信息文件名，“.txt” 为后缀。
     def getImageTxtName(self, imagefile):
+        """
+        Get image information file name, ".txt" is a suffix.
+
+        :param imagefile:
+        :return:
+        """
         return imagefile + ".txt"
 
     # 去掉文件路径和后缀
     def getImageName3(self,filename):
+        """
+        Remove file paths and suffixes
+        :param filename:
+        :return:
+        """
         _filename = self.getImageName(filename)
         return self.getImageName2(_filename)
 
+    #
     def plusName(self,imagefile):
+        """
+        
+        :param imagefile:
+        :return:
+        """
         return "H:/datasets/M/" + imagefile + ".JPEG"
 
     # 获取图像信息
