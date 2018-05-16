@@ -4,10 +4,20 @@ from base import base
 from img_feat import getFeatus
 from time import time
 
+'''
+这是一个将特征 写入/读取 文件的程序
+This is a program that writes/reads features to a file
 
+'''
 
 # 存入文件
 def saveData(data,filename):
+    """
+    write the file
+    :param data:
+    :param filename:
+    :return:
+    """
     if len(data) == 0:
         print("data is None!")
         return 1
@@ -16,6 +26,11 @@ def saveData(data,filename):
 
 # 读取文件
 def loadData(filename):
+    """
+    Read the file
+    :param filename:
+    :return:
+    """
     _temp = np.load(filename)
     if len(_temp) == 0:
         print("data is None!")
@@ -24,6 +39,13 @@ def loadData(filename):
 
 # 列表组合
 def addList(name,feat,info):
+    """
+    The list composite
+    :param name:
+    :param feat:
+    :param info:
+    :return:
+    """
     _temp = []
     _temp.append(name)
     _temp.append (feat)
@@ -32,6 +54,13 @@ def addList(name,feat,info):
 
 # 列表组合
 def addList2(name,feat,info):
+    """
+    The list composite
+    :param name:
+    :param feat:
+    :param info:
+    :return:
+    """
     aList = []
     for i in range(len(name)):
         _temp = []
@@ -44,6 +73,11 @@ def addList2(name,feat,info):
 
 # 提取文件列表的所有信息
 def getAllList(fileList):
+    """
+    Extract all information from the file list.
+    :param fileList:
+    :return:
+    """
     b = base()
     # 特征数据列表
     _featList = []
@@ -61,6 +95,11 @@ def getAllList(fileList):
 
 # 将数据分批写入文件
 def dataWriteFile(num):
+    """
+    Write the data in batches to the file.
+    :param num:
+    :return:
+    """
     b = base ()
     fileList = b.getFileList ("H:/datasets/M/M%.2d/" %num, "JPEG")
     # infoList = b.getImageInfo (fileList, "H:\datasets\imageinfo")
@@ -74,8 +113,12 @@ def dataWriteFile(num):
     
     return 0
 
-
+# 数据汇总写入文件
 def dataWriteFile2():
+    """
+    Data summary writes to the file.
+    :return:
+    """
     b = base ()
     fileList = b.getFileList ("H:/datasets/M/", "JPEG")
     _file, _feat, _info = getAllList (fileList)
@@ -86,6 +129,10 @@ def dataWriteFile2():
 
 # 数据转换
 def data2data():
+    """
+    Data conversion
+    :return:
+    """
     test = []
     for num in range(1,22):
         # _file = loadData ("./model/file_M%.2d.npy" %num)
@@ -101,6 +148,10 @@ def data2data():
 
 # 测试文件数据是否正常
 def testDataFile():
+    """
+    Whether the test file data is normal.
+    :return:
+    """
     _file = loadData ("./model/file_M.npy")
     _feat = loadData ("./model/feat_M.npy")
     _info = loadData ("./model/info_M.npy")
@@ -119,6 +170,10 @@ def testDataFile():
 
 # 测试数据写入和读取是否正常
 def testDataWR():
+    """
+    Whether the test data is written and read normally,
+    :return:
+    """
     # from sys import argv
     # image = argv[1]
     image = "H:/datasets/M/19700102125856069.JPEG"
