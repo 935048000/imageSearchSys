@@ -10,6 +10,10 @@ import base
 from scipy.misc import imread
 from sys import argv
 
+'''
+This is a feature extraction program that contains feature extraction procedures.
+这是一个特征提取程序，里面包含特征提取的相关程序。
+'''
 
 # 归一化
 def normalization(vec):
@@ -17,6 +21,11 @@ def normalization(vec):
 
 # 输入灰度图，返回hash
 def getHash(image):
+    """
+    Enter grayscale and return hash.
+    :param image:
+    :return:
+    """
     avreage = np.mean (image)
     hash = []
     for i in range (image.shape[0]):
@@ -29,6 +38,11 @@ def getHash(image):
 
 # 输入灰度图，返回hash
 def getHash2(image):
+    """
+    Enter grayscale and return hash.
+    :param image:
+    :return:
+    """
     avreage = np.mean (image)
     hash = ""
     for i in range (image.shape[0]):
@@ -43,6 +57,12 @@ def getHash2(image):
 
 # 计算余弦距离
 def Cosine_distance(arg1,arg2):
+    """
+    Cosine distance
+    :param arg1:
+    :param arg2:
+    :return:
+    """
     AVGList = []
     for i in range(arg1.shape[0]):
         dist = pdist (np.vstack ([arg1[i], arg2[i]]), 'cosine')
@@ -55,19 +75,39 @@ def Cosine_distance(arg1,arg2):
 
 # 计算余弦距离
 def Cosine_distance2(arg1,arg2):
+    """
+    Cosine distance
+    :param arg1:
+    :param arg2:
+    :return:
+    """
     dist = pdist (np.vstack ([arg1, arg2]), 'cosine')
     return dist
 
 def cos_cdist(vector,matrixDB):
+    """
+    Cosine distance
+    :param vector:
+    :param matrixDB:
+    :return:
+    """
     # getting cosine distance between search image and images database
     # 计算待搜索图像与数据库图像的余弦距离
     v = vector.reshape (1, -1)
     return cdist (matrixDB, v, 'cosine').reshape (-1)
 
 
-# 可视化
-# 显示图像
+# 可视化,显示图像
 def showImage(img1,img2,kp1,kp2,good):
+    """
+    Visualize, display images.
+    :param img1:
+    :param img2:
+    :param kp1:
+    :param kp2:
+    :param good:
+    :return:
+    """
     h1, w1 = img1.shape[:2]
     h2, w2 = img2.shape[:2]
     view = sp.zeros ((max (h1, h2), w1 + w2, 3), sp.uint8)
@@ -89,14 +129,24 @@ def showImage(img1,img2,kp1,kp2,good):
 
 # 获取特征值
 def getFeatus(img):
+    """
+    Gets the eigenvalue description.
+    :param img:
+    :return:
+    """
     ints = 128
     _img = cv2.imread (img, 0)
     sift = cv2.xfeatures2d.SIFT_create (ints)
     kp, des = sift.detectAndCompute (_img, None)
     return des[:ints]
 
-# 获取特征值描述
+# 获取关键点
 def getFeatus2(img):
+    """
+    Get key points
+    :param img:
+    :return:
+    """
     ints = 128
     _img = cv2.imread (img, 0)
     sift = cv2.xfeatures2d.SIFT_create (ints)
@@ -116,7 +166,12 @@ def getFeatus2(img):
 #         dsc = np.concatenate ([dsc, np.zeros (needed_size - dsc.size)])
 #     return dsc
 
+# 特征提取测试
 def featTest():
+    """
+    Feature extraction test
+    :return:
+    """
     t = time ()
     image = argv[1]
     img = getFeatus(image)
