@@ -10,8 +10,19 @@ from matplotlib import image
 from matplotlib import pyplot as plt
 from memory_profiler import profile
 
+'''
+这是一个特征检索程序，从数据库中检索最相似的图像
+This is a feature retrieval program that retrieves the most similar image from a database
+'''
+
 # 显示图像
 def showImage(imgpath,imgTitle):
+    """
+    Display image
+    :param imgpath:
+    :param imgTitle:
+    :return:
+    """
     # img = imread ("H:/datasets/M/" + imgpath + ".JPEG")
     # namedWindow (imgTitle)
     # imshow (imgTitle, img)
@@ -24,8 +35,70 @@ def showImage(imgpath,imgTitle):
     
     return 0
 
+
+def showImage2(imageList, tops):
+    """
+    Display image
+    :param imageList:
+    :param tops:
+    :return:
+    """
+    for num, index in enumerate (imageList[:tops]):
+        showImage (index[1], "Number %d " % (num + 1))
+    return 0
+
+
+# 显示原图与相似图中间的关键点连线
+def showImage3(image1, image2, kp1, kp2, des1, des2):
+    """
+    Display the key points in the middle of the original image and similar image
+    :param image1:
+    :param image2:
+    :param kp1:
+    :param kp2:
+    :param des1:
+    :param des2:
+    :return:
+    """
+    img1 = cv2.imread (image1, 0)
+    img2 = cv2.imread (image2, 0)
+    h1, w1 = img1.shape[:2]
+    h2, w2 = img2.shape[:2]
+    view = sp.zeros ((max (h1, h2), w1 + w2, 3), sp.uint8)
+    view[:h1, :w1, 0] = img1
+    view[:h2, w1:, 0] = img2
+    view[:, :, 1] = view[:, :, 0]
+    view[:, :, 2] = view[:, :, 0]
+    
+    # 比值判别法
+    def _matchScores(matches):
+        good = []
+        for m, n in matches:
+            if m.distance < 0.70 * n.distance:
+                good.append (m)
+        return good
+    
+    # 计算匹配度
+    matches = knn2 (des1, des2)
+    # 使用比值判别法，获取指定匹配度的特征描述
+    good = _matchScores (matches)
+    print (len (good))
+    # 可视化特征点之间的连线
+    for m in good:
+        # 画出要点
+        color = tuple ([sp.random.randint (0, 255) for _ in range (3)])
+        cv2.line (view, (int (kp1[m.queryIdx].pt[0]), int (kp1[m.queryIdx].pt[1])),
+                  (int (kp2[m.trainIdx].pt[0] + w1), int (kp2[m.trainIdx].pt[1])), color)
+    cv2.imshow ("view", view)
+    cv2.waitKey ()
+
 # 比值判别法
 def matchScores(matches):
+    """
+    Ratio discrimination method
+    :param matches:
+    :return:
+    """
     good = []
     for m, n in matches:
         if m.distance < 0.70 * n.distance:
@@ -34,6 +107,12 @@ def matchScores(matches):
 
 # KNN匹配
 def knn(des1,des2):
+    """
+    KNN
+    :param des1:
+    :param des2:
+    :return:
+    """
     # FLANN 特征
     FLANN_INDEX_KDTREE = 0
     index_params = dict (algorithm=FLANN_INDEX_KDTREE, trees=5)
@@ -47,6 +126,12 @@ def knn(des1,des2):
     return matchScores (matches)
 
 def knn2(des1,des2):
+    """
+    KNN
+    :param des1:
+    :param des2:
+    :return:
+    """
     # FLANN 特征
     FLANN_INDEX_KDTREE = 0
     index_params = dict (algorithm=FLANN_INDEX_KDTREE, trees=5)
@@ -59,46 +144,15 @@ def knn2(des1,des2):
     matches = flann.knnMatch (des1, des2, k=2)
     return matches
 
-def showImage2(imageList,tops):
-    for num,index in enumerate(imageList[:tops]):
-        showImage(index[1],"Number %d " % (num+1))
-    return 0
 
-def showImage3(image1,image2,kp1,kp2,des1,des2):
-    img1 = cv2.imread (image1, 0)
-    img2 = cv2.imread (image2, 0)
-    h1, w1 = img1.shape[:2]
-    h2, w2 = img2.shape[:2]
-    view = sp.zeros ((max (h1, h2), w1 + w2, 3), sp.uint8)
-    view[:h1, :w1, 0] = img1
-    view[:h2, w1:, 0] = img2
-    view[:, :, 1] = view[:, :, 0]
-    view[:, :, 2] = view[:, :, 0]
-
-    # 比值判别法
-    def _matchScores(matches):
-        good = []
-        for m, n in matches:
-            if m.distance < 0.70 * n.distance:
-                good.append (m)
-        return good
-    
-    # 计算匹配度
-    matches = knn2(des1,des2)
-    # 使用比值判别法，获取指定匹配度的特征描述
-    good = _matchScores(matches)
-    print (len (good))
-    # 可视化特征点之间的连线
-    for m in good:
-        # 画出要点
-        color = tuple ([sp.random.randint (0, 255) for _ in range (3)])
-        cv2.line (view, (int (kp1[m.queryIdx].pt[0]), int (kp1[m.queryIdx].pt[1])),
-                  (int (kp2[m.trainIdx].pt[0] + w1), int (kp2[m.trainIdx].pt[1])), color)
-    cv2.imshow ("view", view)
-    cv2.waitKey ()
 
 # @profile(precision=2)
 def imgSearch(imgpath):
+    """
+    image search
+    :param imgpath:
+    :return:
+    """
     t = time ()
     b = base()
     scoreList = []
@@ -138,6 +192,10 @@ def imgSearch(imgpath):
 
 # 测试函数
 def searchTest():
+    """
+    test function
+    :return:
+    """
     from sys import argv
     imgpath = argv[1]
     print ("需要检索的图像： ", imgpath)
